@@ -5,8 +5,6 @@ class Nodo():
     dict_nodos = {}
     nodos = set()
     def __init__(self, nombre:str):
-        if not isinstance(nombre,str):
-            raise TypeError (f'Error de tipo: se esperaba una clase de tipo string y se dio uno {type(nombre)}')
         self.nombre=nombre
         self.grafos= {"Automotor":set(),"Ferroviaria":set(),"Fluvial":set(),"Aerea":set()}
         Nodo.dict_nodos[self.nombre] = self
