@@ -1,5 +1,4 @@
 # Este archivo se encarga de leer los diferentes csv y ya crear los nodos y conexiones directamente cuando se usan sus funciones 
-
 import csv
 from B_nodo import Nodo
 from C_conexion import Conexion
