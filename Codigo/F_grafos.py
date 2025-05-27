@@ -27,7 +27,7 @@ def KPIcosto(origen,destino, carga):
                         else:
                             divisor = automotor["Capacidad"]
                         cantidad=ceil(carga/divisor)
-                        costo=cantidad*(automotor["Costo km"]*conexion.distancia+automotor["Costo Fijo"])+costo_kg*carga
+                        costo=cantidad*(automotor["Costo km"]*conexion.distancia_km+automotor["Costo Fijo"])+costo_kg*carga
                         
                     elif tipo == "Ferroviario":
                         if conexion.distancia >= 200: # Ver si la distancia es mayor a 200
@@ -35,7 +35,7 @@ def KPIcosto(origen,destino, carga):
                         else:
                             costo_km = tren ["Costo km"][0]
                         cantidad=ceil(carga/tren["Capacidad"])
-                        costo=cantidad*(costo_km*conexion.distancia+tren["Costo Fijo"])+tren["Costo kg"]*carga            
+                        costo=cantidad*(costo_km*conexion.distancia_km+tren["Costo Fijo"])+tren["Costo kg"]*carga            
                     
                     elif tipo == "Fluvial":
                         if conexion.restriccion:
@@ -43,10 +43,10 @@ def KPIcosto(origen,destino, carga):
                         else:
                             costo_fijo=barco["Costo Fijo"][0]
                         cantidad=ceil(carga/barco["Capacidad"])
-                        costo=cantidad*(barco["Costo km"]*conexion.distancia+costo_fijo)+barco["Costo kg"]*carga
+                        costo=cantidad*(barco["Costo km"]*conexion.distancia_km+costo_fijo)+barco["Costo kg"]*carga
 
                     elif tipo == "Aerea":
                         cantidad= ceil(carga/avion["Capacidad"])
-                        costo = cantidad *( avion["Costo Fijo"]+  avion["Costo km"]*conexion.distancia)+ carga*avion["Costo kg"]
+                        costo = cantidad *( avion["Costo Fijo"]+  avion["Costo km"]*conexion.distancia_km)+ carga*avion["Costo kg"]
                     valores[f"{conexion.origen}-{conexion.destino}"]=costo
                     print(valores)
