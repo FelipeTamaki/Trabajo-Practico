@@ -1,3 +1,3 @@
-# Lucas: empece a hacer las clases nodo y conexion. Esta casi hecho eso y hice bastante de leer_csv, le faltaria mejorar la validacion de todo y pensar como aplicamos el algoritmo de dijksta asi empezamos con eso
-
-### NO ME QUEDO CLARO SI LOS DEL AGUA SE DIVIDEN EN DOS O NO
+# Read Me
+## Hicimos la clase Nodo y Conexiones 
+## Empezamos a hacer el algoritmo de Dijstra. Elegimos este algoritmo porque lo vimos en Matematica Discreta y nos parecio lo mas indicado para obtener los KPI
