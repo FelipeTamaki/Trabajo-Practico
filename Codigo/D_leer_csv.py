@@ -10,12 +10,13 @@ def crear_nodos(archivo_nodos: str): # Esta funcion va leyendo y creando los nod
             lector = csv.reader(archivo)
             archivo.readline()
             for fila in lector:
-                nodo = Nodo(fila[0])    
+                nodo = Nodo(fila[0])   
+
     else:
         return TypeError (f'Error de tipo: se esperaba un objeto de tipo string y se proporciono un objeto de tipo {type(archivo_nodos)} para la variable archivo_nodos')
 
 def crear_conexiones(archivo_conexiones: str): # Esta funcion va leyendo y creando las conexiones que esten presentes en el archivo de conexiones.
-    diccionario_de_nodos = Nodo.DICT_NODOS
+    diccionario_de_nodos = Nodo.dict_nodos
     with open(archivo_conexiones, newline='', encoding='utf-8') as archivo:
         lector = csv.reader(archivo)
         archivo.readline()
