@@ -1,7 +1,4 @@
 # Este archivo se encaga de todo lo relacionado a la creación de conexiones
-
-
-
 class Conexion():
     conexiones = set()
     def __init__(self,origen:str,destino:str,tipo:str,distancia_km:int,restriccion,valor_restriccion):
