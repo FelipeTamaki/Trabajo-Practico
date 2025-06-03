@@ -3,38 +3,43 @@
 
 # Este archivo es para que hagamos el algoritmo de Dijkstra de los de tipo fluvial (una vez que hacemos tel de todos los tipos vemos cual es el mejor)
 from math import ceil
-from C_conexion import Conexion 
+from C_conexion import Conexion
 from B_nodo import Nodo
 from E_datos_transportes import Transporte, Aereo, Ferroviario, Automotor, Fluvial
     
 def KPIcosto(origen,destino, carga):
-    
     camion=Automotor()
     tren=Ferroviario()
     barco=Fluvial()
     avion=Aereo()
     
-    valores={"Automotor":{},"Ferroviaria":{},"Fluvial":{}, "Aerea":{}}
+    valores_costo={"Automotor":{},"Ferroviaria":{},"Fluvial":{}, "Aerea":{}}
+    valores_tiempo={"Automotor":{},"Ferroviaria":{},"Fluvial":{}, "Aerea":{}}
     for nodo in Nodo.nodos: 
         for tipo, conexiones in nodo.grafos.items():
             for conexion in conexiones:
                 costo = 0
                 if tipo == "Automotor":
                     costo = camion.calcular_costo(conexion,carga)
+                    tiempo= camion.calcular_tiempo(conexion)
                 if tipo == "Ferroviaria":
                     costo = tren.calcular_costo(conexion, carga)
+                    tiempo = tren.calcular_tiempo(conexion)
                 if tipo == "Fluvial":
                     costo=barco.calcular_costo(conexion,carga)
+                    tiempo=barco.calcular_tiempo(conexion)
                 if tipo == "Aerea":
                     costo=avion.calcular_costo(conexion,carga) 
-                valores[tipo][f"{conexion.origen}-{conexion.destino}"]=costo 
+                    tiempo=avion.calcular_tiempo(conexion)
+                valores_costo[tipo][f"{conexion.origen}-{conexion.destino}"]=costo 
+                valores_tiempo[tipo][f"{conexion.origen}-{conexion.destino}"]=tiempo
+
     costo_minimo=float("inf") 
     camino_minimo=[]  
     tipo_minimo = ""       
-    for tipo, conexiones in valores.items():
-        grafo=construir_grafo(valores[tipo])
+    for tipo, conexiones in valores_costo.items():
+        grafo=construir_grafo(valores_costo[tipo])
         costo, camino=dijkstra(grafo,origen,destino)
-        print(costo,camino,tipo)
         if costo_minimo>costo:
             costo_minimo=costo
             camino_minimo=camino
@@ -43,12 +48,30 @@ def KPIcosto(origen,destino, carga):
     camino=""
     for ciudad in camino_minimo:
         camino+=ciudad +"-"
+    camino=camino[:-1]
          
     print(f"Modo: {tipo_minimo}\nItinerario: {camino}\nCosto total: {costo_minimo}")
     
-def KPItiempo(origen, destino, carga):
-    pass
+    tiempo_minimo=float("inf") 
+    camino_minimo=[]  
+    tipo_minimo = ""       
+    for tipo, conexiones in valores_tiempo.items():
+        grafo=construir_grafo(valores_tiempo[tipo])
+        tiempo, camino=dijkstra(grafo,origen,destino)
+        if tiempo_minimo>tiempo:
+            tiempo_minimo=tiempo*60
+            camino_minimo=camino
+            tipo_minimo=tipo
 
+    camino=""
+    for ciudad in camino_minimo:
+        camino+=ciudad +"-"
+    camino=camino[:-1]
+    
+   
+    
+    print("")        
+    print(f"Modo: {tipo_minimo}\nItinerario: {camino}\nTiempo total: {tiempo_minimo}")
 
 def construir_grafo(transporte):
     grafo = {} 
@@ -101,23 +124,3 @@ def dijkstra(grafo, inicio, fin):
         camino.insert(0, inicio)
 
     return costos[fin], camino
-
-# inicio = "A"
-# fin = "D"
-# mejor_costo = float('inf')
-# mejor_transporte = None
-# mejor_camino = []
-
-# for medio, trayectos in valores.items():
-#     grafo = construir_grafo(trayectos)
-#     costo, camino = dijkstra(grafo, inicio, fin)
-
-#     print(f"{medio}: costo = {costo}, camino = {camino}")
-
-#     if costo < mejor_costo:
-#         mejor_costo = costo
-#         mejor_transporte = medio
-#         mejor_camino = camino
-
-
-# print(f"Mejor medio de transporte: {mejor_transporte}: costo = {mejor_costo}, camino = {mejor_camino}")
