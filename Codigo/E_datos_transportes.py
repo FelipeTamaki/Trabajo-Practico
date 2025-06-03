@@ -8,7 +8,6 @@ class Transporte():
         self.velocidad = velocidad
         self.costo_km = costo_km
         self.costo_kg = costo_kg
-   
 
 class Aereo(Transporte):
     def __init__(self):
@@ -18,6 +17,13 @@ class Aereo(Transporte):
         cantidad= ceil(carga/self.capacidad)
         costo = cantidad *( self.costo_fijo+  self.costo_km*conexion.distancia_km)+ carga*self.costo_kg
         return costo
+    
+    def calcular_tiempo(self,conexion):
+        if conexion.restriccion:
+            tiempo=conexion.distancia_km(conexion.valor_restriccion*400+(1-conexion.valor_restriccion)*600)
+        else:
+            tiempo=conexion.distancia_km*600
+        return tiempo
 
 class Ferroviario(Transporte):
     def __init__(self):
@@ -31,6 +37,14 @@ class Ferroviario(Transporte):
         cantidad=ceil(carga/self.capacidad)
         costo=cantidad*(costo_km*conexion.distancia_km+self.costo_fijo)+self.costo_kg*carga  
         return costo
+    
+    def calcular_tiempo(self, conexion, velocidad):
+        if conexion.restriccion:
+            divisor=int(conexion.valor_restriccion)
+            tiempo = conexion.distancia_km/divisor
+        else:
+            tiempo = conexion.distancia_km/velocidad
+        return tiempo
         
 class Automotor(Transporte):
     def __init__(self):
@@ -59,6 +73,10 @@ class Automotor(Transporte):
             costo+=(self.costo_km*conexion.distancia_km+self.costo_km+costo_kg*sobrante)
         return costo
         
+    def calcular_tiempo(self, conexion, velocidad):
+        tiempo=conexion.distancia_k/self.velocidad
+        return tiempo
+        
 class Fluvial(Transporte): 
     def __init__(self):
         super().__init__("Fluvial", None, 40, 100000, 15, 2)
@@ -72,4 +90,6 @@ class Fluvial(Transporte):
         costo=cantidad*(self.costo_km*conexion.distancia_km+costo_fijo)+self.costo_kg*carga
         return costo
     
-    
+    def calcular_tiempo(self,conexion, velocidad):
+        tiempo = conexion.distancia_km/self.velocidad
+        return tiempo
