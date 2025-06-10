@@ -9,36 +9,36 @@ class Transporte():
         self.costo_km = costo_km
         self.costo_kg = costo_kg
 
-class Aereo(Transporte):
+class Aereo(Transporte): # Clase Aereo que carga los datos de los aereos para ser usados para calcular los tiempos y costos
     def __init__(self):
         super().__init__("Aerea", 750, [600,400], 5000, 40, 10)
 
-    def calcular_costo(self,conexion, carga):
+    def calcular_costo(self,conexion, carga): # Calcula el costo del Aereo
         cantidad= ceil(carga/self.capacidad)
-        costo = cantidad *( self.costo_fijo+  self.costo_km*conexion.distancia_km)+ carga*self.costo_kg
+        costo = cantidad*( self.costo_km*conexion.distancia_km)+ carga*self.costo_kg
         return costo
     
-    def calcular_tiempo(self,conexion):
+    def calcular_tiempo(self,conexion): # Calcula el tiempo del Aereo
         if conexion.restriccion:
             tiempo=conexion.distancia_km*(float(conexion.valor_restriccion)*400+(1-float(conexion.valor_restriccion))*600)
         else:
-            tiempo=conexion.distancia_km*600
+            tiempo=conexion.distancia_km*600 
         return tiempo
 
-class Ferroviario(Transporte):
+class Ferroviario(Transporte):# Clase Ferroviario que carga los datos de los aereos para ser usados para calcular los tiempos y costos
     def __init__(self):
         super().__init__("Ferroviario", 100, 100, 150000, None, 3)
 
-    def calcular_costo(self, conexion, carga):
-        if conexion.distancia_km>= 200: # Ver si la distancia es mayor a 200
+    def calcular_costo(self, conexion, carga): # Calcula el costo Ferroviario
+        if conexion.distancia_km < 200: # Ver si la distancia es mayor a 200
             costo_km = 20
         else:
             costo_km = 15
         cantidad=ceil(carga/self.capacidad)
-        costo=cantidad*(costo_km*conexion.distancia_km)+self.costo_kg*carga  
+        costo=(costo_km*conexion.distancia_km)+cantidad*self.costo_kg*carga  
         return costo
     
-    def calcular_tiempo(self, conexion):
+    def calcular_tiempo(self, conexion): # Calcula el costo Ferroviario
         if conexion.restriccion:
             divisor=int(conexion.valor_restriccion)
             tiempo = conexion.distancia_km/divisor
@@ -46,11 +46,11 @@ class Ferroviario(Transporte):
             tiempo = conexion.distancia_km/self.velocidad
         return tiempo
         
-class Automotor(Transporte):
+class Automotor(Transporte):# Clase Automotor que carga los datos de los aereos para ser usados para calcular los tiempos y costos
     def __init__(self):
         super().__init__("Automotor", 30, 80, 30000, 5, None)
         
-    def calcular_costo(self,conexion, carga):
+    def calcular_costo(self,conexion, carga): # Calcula el costo de Automotor
         if conexion.restriccion:
             divisor = conexion.valor_restriccion
         else:
@@ -62,34 +62,34 @@ class Automotor(Transporte):
             costo_kg = 1
 
         cantidad = carga//divisor
-        costo=cantidad*(self.costo_km*conexion.distancia_km+costo_kg*divisor)
-        
+        costo=cantidad*self.costo_km*conexion.distancia_km+cantidad*costo_kg*divisor
         sobrante=carga%divisor
         if sobrante:
             if sobrante>=15000:
                 costo_kg = 2
             else:
                 costo_kg = 1    
-            costo+=(self.costo_km*conexion.distancia_km+costo_kg*sobrante)
+            costo+=self.costo_km*conexion.distancia_km+costo_kg*sobrante
         return costo
         
-    def calcular_tiempo(self, conexion):
+    def calcular_tiempo(self, conexion): # Calcula el tiempo de Automotor
         tiempo=conexion.distancia_km/self.velocidad
         return tiempo
         
-class Fluvial(Transporte): 
+class Fluvial(Transporte): # Clase Fluvial que carga los datos de los aereos para ser usados para calcular los tiempos y costos
     def __init__(self):
         super().__init__("Fluvial", None, 40, 100000, 15, 2)
 
-    def calcular_costo(self,conexion, carga):
+    def calcular_costo(self,conexion, carga): # Calcula el costo de Fluvial
         if conexion.restriccion:
-            costo_fijo=1500
+            self.costo_fijo=1500
         else:
-            costo_fijo=500
+            self.costo_fijo=500
         cantidad=ceil(carga/self.capacidad)
         costo=cantidad*(self.costo_km*conexion.distancia_km)+self.costo_kg*carga
         return costo
     
-    def calcular_tiempo(self,conexion):
+    def calcular_tiempo(self,conexion): # Calcula el tiempo de Fluvial
         tiempo = conexion.distancia_km/self.velocidad
         return tiempo
+    

@@ -7,7 +7,7 @@ from C_conexion import Conexion
 from B_nodo import Nodo
 from E_datos_transportes import Transporte, Aereo, Ferroviario, Automotor, Fluvial
     
-def KPIcosto(origen,destino, carga):
+def KPI(origen,destino, carga): #Calcula los KPI
     camion=Automotor()
     tren=Ferroviario()
     barco=Fluvial()
@@ -22,15 +22,19 @@ def KPIcosto(origen,destino, carga):
                 if tipo == "Automotor":
                     costo = camion.calcular_costo(conexion,carga)
                     tiempo= camion.calcular_tiempo(conexion)
+                   
                 if tipo == "Ferroviaria":
                     costo = tren.calcular_costo(conexion, carga)
                     tiempo = tren.calcular_tiempo(conexion)
+                    
                 if tipo == "Fluvial":
                     costo=barco.calcular_costo(conexion,carga)
                     tiempo=barco.calcular_tiempo(conexion)
+                    
                 if tipo == "Aerea":
                     costo=avion.calcular_costo(conexion,carga) 
                     tiempo=avion.calcular_tiempo(conexion)
+                    
                 valores_costo[tipo][f"{conexion.origen}-{conexion.destino}"]=costo 
                 valores_tiempo[tipo][f"{conexion.origen}-{conexion.destino}"]=tiempo
 
@@ -38,10 +42,23 @@ def KPIcosto(origen,destino, carga):
     camino_minimo=[]  
     tipo_minimo = ""       
     for tipo, conexiones in valores_costo.items():
-        grafo=construir_grafo(valores_costo[tipo])
-        costo, camino=dijkstra(grafo,origen,destino)
-        if costo_minimo>costo:
-            costo_minimo=costo
+        grafo = construir_grafo(valores_costo[tipo])
+        costo, camino = dijkstra(grafo, origen, destino)
+
+        costo_total = 0
+        for i in range(len(camino)-1):
+            ciudad_origen = camino[i]
+            ciudad_destino = camino[i+1]
+            nodo_obj = Nodo.dict_nodos[ciudad_origen]
+            
+        for conexion in nodo_obj.grafos[tipo]:
+            if conexion.destino.nombre == ciudad_destino:
+                costo_total += obtener_transporte(tipo).calcular_costo(conexion, carga)
+                break
+
+        print(costo_total)
+        if costo_minimo>costo_total:
+            costo_minimo=costo_total
             camino_minimo=camino
             tipo_minimo=tipo
 
@@ -58,8 +75,8 @@ def KPIcosto(origen,destino, carga):
     for tipo, conexiones in valores_tiempo.items():
         grafo=construir_grafo(valores_tiempo[tipo])
         tiempo, camino=dijkstra(grafo,origen,destino)
-        if tiempo_minimo>tiempo:
-            tiempo_minimo=tiempo*60
+        if tiempo<tiempo_minimo:
+            tiempo_minimo=tiempo
             camino_minimo=camino
             tipo_minimo=tipo
 
@@ -68,12 +85,10 @@ def KPIcosto(origen,destino, carga):
         camino+=ciudad +"-"
     camino=camino[:-1]
     
-   
-    
     print("")        
     print(f"Modo: {tipo_minimo}\nItinerario: {camino}\nTiempo total: {tiempo_minimo}")
 
-def construir_grafo(transporte):
+def construir_grafo(transporte): # Construye un grafo segun el tipo
     grafo = {} 
     for trayecto in transporte:
         origen, destino = trayecto.split("-")
@@ -124,3 +139,13 @@ def dijkstra(grafo, inicio, fin):
         camino.insert(0, inicio)
 
     return costos[fin], camino
+    
+def obtener_transporte(tipo):
+    if tipo == "Automotor":
+        return Automotor()
+    elif tipo == "Ferroviaria":
+        return Ferroviario()
+    elif tipo == "Fluvial":
+        return Fluvial()
+    elif tipo == "Aerea":
+        return Aereo()
