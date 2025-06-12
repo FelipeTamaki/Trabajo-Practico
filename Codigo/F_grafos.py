@@ -2,6 +2,8 @@ from math import ceil
 from C_conexion import Conexion
 from B_nodo import Nodo
 from E_datos_transportes import Transporte, Aereo, Ferroviario, Automotor, Fluvial
+from datetime import timedelta
+import networkx as nx
 
 def KPI(origen, destino, carga):
     camion = Automotor()
@@ -36,57 +38,48 @@ def KPI(origen, destino, carga):
     costo_minimo = float("inf")
     camino_minimo = []
     tipo_minimo = ""
-
     for tipo, conexiones in valores_costo.items():
         grafo = construir_grafo(valores_costo[tipo])
-        costo, camino = dijkstra(grafo, origen, destino)
+        costo, camino= dijkstra(grafo, origen, destino)
         transporte = obtener_transporte(tipo)
-
-        if not isinstance(camino, list):
-            continue
-        print(costo)
-        if tipo == "Automotor":
-            capacidad_efectiva = transporte.capacidad
-            for i in range(len(camino) - 1):
-                origen_conexion, destino_conexion = camino[i], camino[i + 1]
-                for conexion in Conexion.conexiones:
-                    if ((conexion.origen == origen_conexion and conexion.destino == destino_conexion) or
-                        (conexion.origen == destino_conexion and conexion.destino == origen_conexion)) and conexion.tipo == tipo:
-                        if conexion.restriccion:
-                            capacidad_efectiva = min(capacidad_efectiva, int(conexion.valor_restriccion))
-            costo_carga_total = transporte.calcular_costo_total_carga(carga, capacidad_efectiva)
-        else:
-            costo_carga_total = transporte.calcular_costo_total_carga(carga)
-    
-        costo_total = costo + costo_carga_total
-        print(costo_total)
+        costo_carga=costo_carga_total(camino,carga,tipo,transporte)
+        costo_total = costo + costo_carga
+        tiempo=calcular_tiempo_total(camino,tipo, valores_tiempo)
 
         if costo_total < costo_minimo:
             costo_minimo = costo_total
             camino_minimo = camino
             tipo_minimo = tipo
-
+            tiempo_minimo=tiempo
+    
+    print(obtener_datos_acumulados(camino_minimo,tipo,carga,valores_costo,valores_tiempo))
     camino_str = "-".join(camino_minimo)
     print(f"\nCosto mínimo:")
-    print(f"Modo: {tipo_minimo}\nItinerario: {camino_str}\nCosto total: {costo_minimo}")
-
+    print(f"Medio de transporte: {tipo_minimo}\nItinerario: {camino_str}\nCosto total: ${costo_minimo}\nTiempo esperado: {tiempo_minimo}")
+    
     # Tiempo mínimo
     tiempo_minimo = float("inf")
     camino_minimo = []
     tipo_minimo = ""
     for tipo, conexiones in valores_tiempo.items():
+        transporte = obtener_transporte(tipo)
         grafo = construir_grafo(valores_tiempo[tipo])
         tiempo, camino = dijkstra(grafo, origen, destino)
-        if not isinstance(camino, list):
-            continue
+        costo=calcular_costo_total(camino,tipo,valores_costo)
+        costo_carga=costo_carga_total(camino,carga,tipo,transporte)
+        costo_total = costo + costo_carga
         if tiempo < tiempo_minimo:
             tiempo_minimo = tiempo
             camino_minimo = camino
             tipo_minimo = tipo
+            costo_minimo=costo_total
+    
+    total_segundos = int(tiempo_minimo * 3600)
+    duracion = timedelta(seconds=total_segundos)
 
     camino_str = "-".join(camino_minimo)
     print(f"\nTiempo mínimo:")
-    print(f"Modo: {tipo_minimo}\nItinerario: {camino_str}\nTiempo total: {tiempo_minimo}")
+    print(f"Medio de transporte: {tipo_minimo}\nItinerario: {camino_str}\nTiempo total: {duracion}\nCosto total: ${costo_minimo}")
 
 def construir_grafo(transporte):
     grafo = {}
@@ -103,7 +96,7 @@ def dijkstra(grafo, inicio, fin):
     anteriores = {} 
     visitados = [] # Una vez que visitemos cada nodo se va a agregar aca para saber que ya sabemos como llegar a ese nodo de la forma minima
     costos[inicio] = 0
-
+    
     while nodos:
         actual = None
         for nodo in nodos:
@@ -137,3 +130,86 @@ def obtener_transporte(tipo):
         return Fluvial()
     elif tipo == "Aerea":
         return Aereo()
+
+def calcular_tiempo_total(camino, tipo, valores_tiempo):
+    tiempo_total = 0
+    for i in range(len(camino) - 1):
+        origen = camino[i]
+        destino = camino[i + 1]
+        key = f"{origen}-{destino}"
+        key_inv = f"{destino}-{origen}"
+        tiempo = valores_tiempo[tipo].get(key) or valores_tiempo[tipo].get(key_inv)
+        if tiempo:
+            tiempo_total += tiempo
+    return timedelta(seconds=int(tiempo_total * 3600))
+
+def calcular_costo_total(camino, tipo, valores_costo):
+    costo_total = 0
+    for i in range(len(camino) - 1):
+        origen = camino[i]
+        destino = camino[i + 1]
+        key = f"{origen}-{destino}"
+        key_inv = f"{destino}-{origen}"
+        costo = valores_costo[tipo].get(key) or valores_costo[tipo].get(key_inv)
+        if costo:
+            costo_total += costo
+    return costo_total
+
+def costo_carga_total(camino,carga,tipo,transporte):
+    if tipo == "Automotor":
+        capacidad_efectiva = transporte.capacidad
+        for i in range(len(camino) - 1):
+            origen_conexion, destino_conexion = camino[i], camino[i + 1]
+            for conexion in Conexion.conexiones:
+                if ((conexion.origen == origen_conexion and conexion.destino == destino_conexion) or
+                    (conexion.origen == destino_conexion and conexion.destino == origen_conexion)) and conexion.tipo == tipo:
+                    if conexion.restriccion:
+                        capacidad_efectiva = min(capacidad_efectiva, int(conexion.valor_restriccion))
+        costo_carga_total = transporte.calcular_costo_total_carga(carga, capacidad_efectiva)
+    else:
+        costo_carga_total = transporte.calcular_costo_total_carga(carga)
+    return costo_carga_total
+
+def obtener_datos_acumulados(camino, tipo, carga, valores_costo, valores_tiempo):
+    distancias_acumuladas = [0]
+    tiempos_acumulados = [0]
+    costos_acumulados = [0]
+
+    distancia_total = 0
+    tiempo_total = 0
+    costo_total = 0
+
+    for i in range(len(camino) - 1):
+        origen = camino[i]
+        destino = camino[i + 1]
+        key = f"{origen}-{destino}"
+        key_inv = f"{destino}-{origen}"
+    
+        for conexion in Conexion.conexiones:
+            if (conexion.origen.nombre == origen and conexion.destino.nombre == destino) or (conexion.origen.nombre == destino and conexion.destino.nombre == origen) and conexion.tipo.nombre == tipo:
+                distancia=conexion.distancia_km
+        print(distancia)
+        # Tiempo
+        tiempo = valores_tiempo[tipo].get(key) or valores_tiempo[tipo].get(key_inv) or 0
+        print(tiempo)
+        # Costo
+        costo = valores_costo[tipo].get(key) or valores_costo[tipo].get(key_inv) or 0
+        print(costo)
+        # Acumular
+        distancia_total += distancia
+        tiempo_total += tiempo
+        costo_total += costo
+
+        distancias_acumuladas.append(distancia_total)
+        tiempos_acumulados.append(tiempo_total)
+        costos_acumulados.append(costo_total)
+
+    return distancias_acumuladas, tiempos_acumulados, costos_acumulados
+
+def KPI_solicitudes(diccionario_solicitudes):
+    for key in diccionario_solicitudes.keys(): # obtiene el id del pedido
+        print(f'Posbles rutas para el pedido {key}')
+        carga = diccionario_solicitudes[key]["peso_kg"]
+        origen = diccionario_solicitudes[key]["origen"]
+        destino = diccionario_solicitudes[key]["destino"]
+        KPI(origen, destino, carga) # luego de extraer una solicitud del archivo csv, calcula su kpi de costo y tiempo

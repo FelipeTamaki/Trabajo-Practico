@@ -20,7 +20,15 @@ class Conexion():
     def conectar(self):
         self.origen.agregarConexion(self)
         self.destino.agregarConexion(self)
+    
+    def getOrigen(self):
+        return self.origen
 
+    def getDestino(self):
+        return self.destino
+
+    def getTipo(self):
+        return self.tipo
     @classmethod
     def imprimirConexiones(cls):
         for conex in Conexion.conexiones:
