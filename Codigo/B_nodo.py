@@ -26,4 +26,3 @@ class Nodo():
                 print(f"{tipo}: ")
                 for conexion in conexiones:
                     print(conexion)
-            
