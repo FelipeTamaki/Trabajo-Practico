@@ -75,22 +75,33 @@ def pedir_destino(carga, origen):
 
     tk.Button(menu, text="Calcular KPIs", command=calcularKPI, font=("Helvetica",14)).pack(pady=5)
 
-crear_nodos("nodos.csv")
-crear_conexiones("conexiones.csv")
+# ESTAS FUNCIONES SON LAS QUE SE UTILIZAN PARA CAMBIAR LOS DATOS QUE SE ANALIZAN
+try:
+    crear_nodos("nodos.csv")
+    try:
+        crear_conexiones("conexiones.csv")
+    except FileNotFoundError:
+        print("No se encontro el archivo de conexiones")
+        raise
+    except ValueError as e:
+        print(e)
+except FileNotFoundError:
+    print("No se encontro el archivo de nodos")
+    raise 
+except ValueError as e:
+    print(e)
+else:
+    menu = tk.Tk()
+    menu.title("Menú interactivo")
+    menu.geometry("300x140")
 
-menu = tk.Tk()
-menu.title("Menú interactivo")
-menu.geometry("300x140")
+    # Menú principal
+    try:
+        tk.Button(menu, text="Solicitudes automáticas", command=solicitudes_automaticas,font=("Helvetica",14)).pack(pady=5)
+        tk.Button(menu, text="Solicitud manual", command=solicitud_manual, font=("Helvetica",14)).pack(pady=5)
 
-# Menú principal
-tk.Button(menu, text="Solicitudes automáticas", command=solicitudes_automaticas,font=("Helvetica",14)).pack(pady=5)
-tk.Button(menu, text="Solicitud manual", command=solicitud_manual, font=("Helvetica",14)).pack(pady=5)
+        menu.mainloop()
+    except ValueError as e:
+        print(e)
 
-menu.mainloop()
-
-# HACER EL READ ME
-# PONER LOS COMENTARIOS
 # VER COMO HACEMOS LO DE LOS GRAFICOS CUANDO TE LOS MUESTRA
-    # Se podria poner el resultado del KPI dentro de los graficos
-    # Sino que pregunte cada vez si se quieren mostrar los graficos
-# HACER MAS LINDO EL MENU Y VER SI LE CAMBIAMOS COMO FUNCIONA

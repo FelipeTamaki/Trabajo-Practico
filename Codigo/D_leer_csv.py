@@ -10,7 +10,10 @@ def crear_nodos(archivo_nodos: str): # Esta funcion va leyendo y creando los nod
             lector = csv.reader(archivo)
             archivo.readline()
             for fila in lector:
-                nodo = Nodo(fila[0])   
+                if fila == []:
+                    continue
+                else:
+                    nodo = Nodo(fila[0])   
 
     else:
         return TypeError (f'Error de tipo: se esperaba un objeto de tipo string y se proporciono un objeto de tipo {type(archivo_nodos)} para la variable archivo_nodos')
@@ -21,6 +24,9 @@ def crear_conexiones(archivo_conexiones: str): # Esta funcion va leyendo y crean
         lector = csv.reader(archivo)
         archivo.readline() # se saltea la primera fila de enunciados
         for fila in lector:
+            if fila == []:
+                continue
+            else:
                 origen = fila[0]
                 if not origen:
                      raise ValueError (f'Error en el origen de una de las conexiones, el valor no puede ser None')
@@ -47,17 +53,20 @@ def leer_solicitudes(archivo_solicitudes:str):
         lector = csv.reader(archivo)
         archivo.readline() # se saltea la primera fila de enunciados
         for fila in lector: # Se va guardando por fila las solicitudes y se ingresan dentro de un diccionario para despues usar los datos en la funcion KPI
-            id_carga = fila[0] 
-            if not id_carga:
-                raise ValueError (f'Error en el id de carga, debe tener un id de carga asociado')
-            peso_kg = int(fila[1])
-            if not peso_kg:
-                    raise ValueError (f'Error en el peso_kg')
-            origen = fila[2]
-            if not origen:
-                    raise ValueError (f'Error en el origen')
-            destino = fila[3]
-            if not destino:
-                    raise ValueError (f'Error en el destino')
-            solicitudes[id_carga] = {"peso_kg":peso_kg,"origen":origen,"destino":destino}
+            if fila == []:
+                continue
+            else:
+                id_carga = fila[0] 
+                if not id_carga:
+                    raise ValueError (f'Error en el id de carga, debe tener un id de carga asociado')
+                peso_kg = int(fila[1])
+                if not peso_kg:
+                        raise ValueError (f'Error en el peso_kg')
+                origen = fila[2]
+                if not origen:
+                        raise ValueError (f'Error en el origen')
+                destino = fila[3]
+                if not destino:
+                        raise ValueError (f'Error en el destino')
+                solicitudes[id_carga] = {"peso_kg":peso_kg,"origen":origen,"destino":destino}
         return solicitudes

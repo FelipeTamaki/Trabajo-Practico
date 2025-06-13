@@ -1,6 +1,5 @@
 origen,destino,tipo,distancia_km,restriccion,valor_restriccion
 Zarate,Buenos_Aires,Ferroviaria,85,velocidad_max,80
-Zarate,Junin,Ferroviaria,185,,
 Junin,Azul,Ferroviaria,265,,
 Azul,Mar_del_Plata,Ferroviaria,246,,
 Buenos_Aires,Mar_del_Plata,Ferroviaria,384,,
