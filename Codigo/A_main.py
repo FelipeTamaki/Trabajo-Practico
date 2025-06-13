@@ -3,20 +3,20 @@ from F_grafos import *
 from Z_validaciones import *
 import tkinter as tk
 
-def limpiar_ventana():
+def limpiar_ventana(): # Hace que se borren los widgets del menu para que cambie lo que ve el usuario en su seleccion
     for widget in menu.winfo_children():
         widget.destroy()
 
-def volver_al_menu():
+def volver_al_menu(): # Cuando termina la solicitud vuelve para comenzar nuevamente hasta que se cierre el mismo
     limpiar_ventana()
     tk.Button(menu, text="Solicitudes automáticas", command=solicitudes_automaticas,font=("Helvetica",14)).pack(pady=5)
     tk.Button(menu, text="Solicitud manual", command=solicitud_manual,font=("Helvetica",14)).pack(pady=5)
 
-def solicitudes_automaticas():
+def solicitudes_automaticas(): # Realiza todas las solicitudes que encuentre dentro del archivo solicitudes
     solicitudes = leer_solicitudes("solicitudes.csv")
     KPI_solicitudes(solicitudes)
 
-def solicitud_manual():
+def solicitud_manual(): # Realiza la solicitud que ingrese el usuario 
     limpiar_ventana()
     tk.Label(menu, text="Ingrese la carga (número positivo):",font=("Helvetica",14)).pack(pady=5)
     entry_carga = tk.Entry(menu)
@@ -34,7 +34,7 @@ def solicitud_manual():
 
     tk.Button(menu, text="Siguiente", command=siguiente_origen,font=("Helvetica",14)).pack(pady=5)
 
-def pedir_origen(carga):
+def pedir_origen(carga): # Pide el origen al usuario
     limpiar_ventana()
     tk.Label(menu, text="Seleccione el origen:",font=("Helvetica",14)).pack(pady=5)
 
@@ -50,7 +50,7 @@ def pedir_origen(carga):
 
     tk.Button(menu, text="Siguiente", command=siguiente_destino,font=("Helvetica",14)).pack(pady=5)
 
-def pedir_destino(carga, origen):
+def pedir_destino(carga, origen): # Pide el destino sabiendo el origen
     limpiar_ventana()
     tk.Label(menu, text=f"Seleccione el destino (desde {origen}):",font=("Helvetica",14)).pack(pady=5)
 
@@ -66,7 +66,7 @@ def pedir_destino(carga, origen):
     option_menu_destino = tk.OptionMenu(menu, destino_var, *opciones_destino)
     option_menu_destino.pack()
 
-    def calcularKPI():
+    def calcularKPI(): # Calcula el KPI con los datos que proporciono el usuario
         destino = destino_var.get()
         limpiar_ventana()
         KPI(origen, destino, carga)
