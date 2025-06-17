@@ -4,7 +4,11 @@ from B_nodo import Nodo
 from C_conexion import Conexion
 from Z_validaciones import *
 
-def crear_nodos(archivo_nodos: str): # Esta funcion va leyendo y creando los nodos que esten presentes en el archivo de nodos. La validacion se hace dentro de la funcion nodo
+def crear_nodos(archivo_nodos: str): 
+    """
+    Esta funcion va leyendo y creando los nodos que esten presentes en el archivo de nodos. La validacion se hace dentro de la funcion nodo
+    """
+
     if isinstance(archivo_nodos,str):
         with open(archivo_nodos, newline='', encoding='utf-8') as archivo:
             lector = csv.reader(archivo)
@@ -18,7 +22,11 @@ def crear_nodos(archivo_nodos: str): # Esta funcion va leyendo y creando los nod
     else:
         return TypeError (f'Error de tipo: se esperaba un objeto de tipo string y se proporciono un objeto de tipo {type(archivo_nodos)} para la variable archivo_nodos')
 
-def crear_conexiones(archivo_conexiones: str): # Esta funcion va leyendo y creando las conexiones que esten presentes en el archivo de conexiones.
+def crear_conexiones(archivo_conexiones: str): 
+    """
+    Esta funcion va leyendo y creando las conexiones que esten presentes en el archivo de conexiones.
+    """
+
     diccionario_de_nodos = Nodo.dict_nodos
     with open(archivo_conexiones, newline='', encoding='utf-8') as archivo: # abre el archivo y se asegura de que no ocurra un error al dejarlo abierto
         lector = csv.reader(archivo)
@@ -48,6 +56,10 @@ def crear_conexiones(archivo_conexiones: str): # Esta funcion va leyendo y crean
                 conexion = Conexion(diccionario_de_nodos[origen],diccionario_de_nodos[destino], tipo, float(distancia_km), restriccion, valor_restriccion)
 
 def leer_solicitudes(archivo_solicitudes:str):
+    """
+    Lee las solicitudes de el csv y las devuelve en forma de diccionario para ser utilizadas en la funcion de KPI
+    """
+    
     solicitudes = {}
     with open(archivo_solicitudes, newline='', encoding='utf-8') as archivo: # abre el archivo y se asegura de que no ocurra un error al dejarlo abierto
         lector = csv.reader(archivo)

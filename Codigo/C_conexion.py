@@ -17,7 +17,11 @@ class Conexion():
         else:           
             return f" Origen:{self.origen}, Destino:{self.destino}, Tipo:{self.tipo}, Distancia_km:{self.distancia_km}, Restriccion:{self.restriccion}, Valor_restriccion:{self.valor_restriccion}"
         
-    def conectar(self):
+    def conectar(self): 
+        """
+        Conecta ambos nodos (origen y destino) a la conexion
+        """
+        
         self.origen.agregarConexion(self)
         self.destino.agregarConexion(self)
     

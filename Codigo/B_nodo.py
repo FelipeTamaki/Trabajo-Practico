@@ -14,6 +14,10 @@ class Nodo():
         return f'{self.nombre}'
     
     def agregarConexion(self,conexion):
+        """
+        agrega la conexion al nodo para que la tome como propia
+        """
+        
         if not isinstance(conexion, Conexion):
             raise TypeError (f'Error de tipo: se esperaba una clase de tipo Conexion y se dio uno {type(conexion)}')
         self.grafos[conexion.tipo].add(conexion)

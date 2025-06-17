@@ -151,6 +151,7 @@ def obtener_transporte(tipo):
     """
     asocia cada tipo de transporte con un objeto de una clase
     """
+
     if tipo == "Automotor":
         return Automotor()
     elif tipo == "Ferroviaria":
@@ -196,6 +197,7 @@ def costo_carga_total(camino,carga,tipo,transporte):
     """
     Calcula el costo de carga total
     """
+
     if tipo == "Automotor":
         capacidad_efectiva = transporte.capacidad
         for i in range(len(camino) - 1):
@@ -214,6 +216,7 @@ def obtener_datos_acumulados(camino, tipo, valores_costo, valores_tiempo,costo_c
     """
     Define 3 listas con los valores acumulados, la de costos la arranca desde el costo de la carga (fijo)
     """
+
     distancias_acumuladas = [0]
     tiempos_acumulados = [0]
     costos_acumulados = [costo_carga_minima]
@@ -253,6 +256,7 @@ def graficar(titulo,tiempo_acumulado,distancia_acumulada,costo_acumulado, grafo_
     """
     Grafica los graficos de costos acumulados, tiempos acumulados y el grafo de camino optimo
     """
+
     fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 
     fig.suptitle(f'{titulo}: {tipo_minimo}',fontsize=20, fontweight = 'bold',color="black")
@@ -340,6 +344,10 @@ def graficar(titulo,tiempo_acumulado,distancia_acumulada,costo_acumulado, grafo_
     plt.show()
 
 def KPI_solicitudes(diccionario_solicitudes):
+    """
+    Obtiene los KPI de las distintas solicitudes presentes en el archivo de solicitudes cargado
+    """
+    
     for key in diccionario_solicitudes.keys(): # obtiene el id del pedido
         print(f'Posbles rutas para el pedido {key}')
         carga = diccionario_solicitudes[key]["peso_kg"]
