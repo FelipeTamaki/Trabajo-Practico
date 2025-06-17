@@ -14,6 +14,7 @@
 ## Cómo utilizar con datos personales
 Para utilizar el código se debe tener un archivo de nodos (ciudades) con el formato presente en el archivo `nodos.csv`. También se debe contar con un archivo CSV de conexiones (caminos) con el formato presente en `conexiones.csv`. Ambos archivos pueden utilizarse como ejemplo.  
 Una vez obtenidos los archivos con el formato adecuado, se deben modificar los nombres de los archivos a cargar mediante las funciones `crear_nodos()` y `crear_conexiones(). Esto se hace en el archivo `A_main.py`, líneas 79 a 96.
+
 ```
 try:
     crear_nodos("nodos.csv")
@@ -40,7 +41,6 @@ def solicitudes_automaticas(): # Realiza todas las solicitudes que encuentre den
     solicitudes = leer_solicitudes("solicitudes.csv")
     KPI_solicitudes(solicitudes)
 ```
-
 
 Luego de cargar los archivos nuevos, solo debe ejecutarse el programa. Se abrirán los menús interactivos para el usuario.
 

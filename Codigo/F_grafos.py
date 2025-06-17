@@ -6,7 +6,11 @@ from datetime import timedelta
 import matplotlib.pyplot as plt
 import networkx as nx
 
-def KPI(origen, destino, carga): #Calcula ambas soluciones optimas (costo y tiempo), imprime el medio de transporte, el camino, el costo y el tiempo que tarda. 
+def KPI(origen, destino, carga): 
+    """"
+    Calcula ambas soluciones optimas (costo y tiempo), imprime el medio de transporte, el camino, el costo y el tiempo que tarda. 
+    """
+
     camion = Automotor()
     tren = Ferroviario()
     barco = Fluvial()
@@ -65,6 +69,7 @@ def KPI(origen, destino, carga): #Calcula ambas soluciones optimas (costo y tiem
         camino_str = "-".join(camino_minimo)
         print(f"\nCosto mínimo:")
         print(f"Medio de transporte: {tipo_minimo}\nItinerario: {camino_str}\nCosto total: ${costo_minimo}\nTiempo esperado: {tiempo_minimo}")
+       
         # Inicializamos variables para guardar el mejor resultado posible según tiempo:
         # tiempo mínimo, camino correspondiente, tipo de transporte y costos asociados
         tiempo_minimo = float("inf")
@@ -93,9 +98,13 @@ def KPI(origen, destino, carga): #Calcula ambas soluciones optimas (costo y tiem
         graficar(titulo, tiempo_acumulado,distancia_acumulada,costo_acumulado,valores_tiempo,camino_minimo,tipo_minimo,costo_minimo,duracion)
         camino_str = "-".join(camino_minimo)
         print(f"\nTiempo mínimo:")
-        print(f"Medio de transporte: {tipo_minimo}\nItinerario: {camino_str}\nTiempo total: {duracion}\nCosto total: ${costo_minimo}")
+        print(f"Medio de transporte: {tipo_minimo}\nItinerario: {camino_str}\nTiempo total: {duracion}\nCosto total: ${costo_minimo}\n")
 
-def construir_grafo(transporte): # Construye el grafo para realizar Dijkstra
+def construir_grafo(transporte): 
+    """
+    Construye el grafo para realizar Dijkstra
+    """
+
     grafo = {}
     for trayecto in transporte:
         origen, destino = trayecto.split("-")
@@ -104,7 +113,11 @@ def construir_grafo(transporte): # Construye el grafo para realizar Dijkstra
         grafo.setdefault(destino, []).append((origen, costo))
     return grafo
 
-def dijkstra(grafo, inicio, fin): # Algoritmo que obtiene el camino minimo desde un nodo hasta todo el resto de los nodos del grafo
+def dijkstra(grafo, inicio, fin): 
+    """
+    Algoritmo que obtiene el camino minimo desde un nodo hasta todo el resto de los nodos del grafo
+    """
+
     nodos = list(grafo.keys())
     costos = {nodo: float('inf') for nodo in grafo} # Hace que inicialmente todos esten en infinito
     anteriores = {} 
@@ -134,7 +147,10 @@ def dijkstra(grafo, inicio, fin): # Algoritmo que obtiene el camino minimo desde
         camino.insert(0, inicio)
     return costos.get(fin, float('inf')), camino
 
-def obtener_transporte(tipo): #se asocia cada tipo de transporte con un objeto de una clase
+def obtener_transporte(tipo): 
+    """
+    asocia cada tipo de transporte con un objeto de una clase
+    """
     if tipo == "Automotor":
         return Automotor()
     elif tipo == "Ferroviaria":
@@ -144,7 +160,11 @@ def obtener_transporte(tipo): #se asocia cada tipo de transporte con un objeto d
     elif tipo == "Aerea":
         return Aereo()
 
-def calcular_tiempo_total(camino, tipo, valores_tiempo): #calcula tiempo total para cada tipo de transporte, extrayendo los datos del diccionario valores_tiempo
+def calcular_tiempo_total(camino, tipo, valores_tiempo): 
+    """
+    calcula tiempo total para cada tipo de transporte, extrayendo los datos del diccionario valores_tiempo
+    """
+
     tiempo_total = 0
     for i in range(len(camino) - 1):
         origen = camino[i]
@@ -156,7 +176,11 @@ def calcular_tiempo_total(camino, tipo, valores_tiempo): #calcula tiempo total p
             tiempo_total += tiempo
     return timedelta(seconds=int(tiempo_total * 3600)) #para devolver el tiempo total en hh:mm:ss
 
-def calcular_costo_total(camino, tipo, valores_costo): # Calcula el costo total
+def calcular_costo_total(camino, tipo, valores_costo):
+    """
+    Calcula el costo total
+    """
+
     costo_total = 0
     for i in range(len(camino) - 1):
         origen = camino[i]
@@ -169,6 +193,9 @@ def calcular_costo_total(camino, tipo, valores_costo): # Calcula el costo total
     return costo_total
 
 def costo_carga_total(camino,carga,tipo,transporte):
+    """
+    Calcula el costo de carga total
+    """
     if tipo == "Automotor":
         capacidad_efectiva = transporte.capacidad
         for i in range(len(camino) - 1):
@@ -184,7 +211,9 @@ def costo_carga_total(camino,carga,tipo,transporte):
     return costo_carga_total
 
 def obtener_datos_acumulados(camino, tipo, valores_costo, valores_tiempo,costo_carga_minima): 
-    #Define 3 listas con los valores acumulados, la de costos la arranca desde el costo de la carga (fijo)
+    """
+    Define 3 listas con los valores acumulados, la de costos la arranca desde el costo de la carga (fijo)
+    """
     distancias_acumuladas = [0]
     tiempos_acumulados = [0]
     costos_acumulados = [costo_carga_minima]
@@ -221,12 +250,15 @@ def obtener_datos_acumulados(camino, tipo, valores_costo, valores_tiempo,costo_c
     return distancias_acumuladas, tiempos_acumulados, costos_acumulados 
 
 def graficar(titulo,tiempo_acumulado,distancia_acumulada,costo_acumulado, grafo_lista, camino_minimo, tipo_minimo,costo_minimo,tiempo_minimo):
-    fig, axs = plt.subplots(1, 3, figsize=(12, 5))
+    """
+    Grafica los graficos de costos acumulados, tiempos acumulados y el grafo de camino optimo
+    """
+    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 
     fig.suptitle(f'{titulo}: {tipo_minimo}',fontsize=20, fontweight = 'bold',color="black")
 
     texto_info = f"Origen: {camino_minimo[0]}\nDestino: {camino_minimo[-1]}\nCosto total: {costo_minimo}\nTiempo total: {tiempo_minimo}"
-    fig.text(0.01, 0.92, texto_info,fontsize=10, fontweight='bold',bbox=dict(facecolor='lightblue', edgecolor='black', boxstyle='square,pad=0.3'),color='black')
+    fig.text(0.02, 0.92, texto_info,fontsize=10, fontweight='bold',bbox=dict(facecolor='lightblue', edgecolor='black', boxstyle='square,pad=0.3'),color='black')
 
     # Grafico tiempo vs distancia
     axs[0].plot(distancia_acumulada, tiempo_acumulado,marker='o',color='teal')
@@ -241,7 +273,6 @@ def graficar(titulo,tiempo_acumulado,distancia_acumulada,costo_acumulado, grafo_
     axs[1].set_xlabel('Distancia acumulada (km)')
     axs[1].set_ylabel('Costo acumulado ($)')
     axs[1].grid(True)
-
 
     # Grafo visual para representar la ruta óptima con networkx
     grafo = nx.Graph()  # Se crea un grafo vacio no dirigido
@@ -290,6 +321,22 @@ def graficar(titulo,tiempo_acumulado,distancia_acumulada,costo_acumulado, grafo_
 
     # ajusta espaciado
     plt.tight_layout()
+
+    # ajusta espaciado
+    plt.tight_layout()
+
+    # Hace que se maximice la ventana del grafico cuando se muestre para que se vea todo bien
+    mng = plt.get_current_fig_manager()
+    try:
+        mng.window.state('zoomed')  # Para Windows
+    except AttributeError:
+        try:
+            mng.window.showMaximized()  # Para Linux
+        except AttributeError:
+            pass
+
+    plt.show()
+
     plt.show()
 
 def KPI_solicitudes(diccionario_solicitudes):

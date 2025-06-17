@@ -93,7 +93,7 @@ except ValueError as e:
 else:
     menu = tk.Tk()
     menu.title("Menú interactivo")
-    menu.geometry("300x140")
+    menu.geometry("352x140")
 
     # Menú principal
     try:
@@ -104,4 +104,12 @@ else:
     except ValueError as e:
         print(e)
 
-# VER COMO HACEMOS LO DE LOS GRAFICOS CUANDO TE LOS MUESTRA
+# Distancia 1Km - todo bien
+# Gran red - Tira error, el numero ingresado no puede ser convertido a formato float, se esperaba una restriccion con valor float.
+# Minima red - todo bien
+# Muchas solicitudes - todo bien
+# Nodo desconectado - todo bien
+# Solo_avion - todo bien
+# Solo_Barco - todo bien
+# Solo_camion - todo bien
+# Solo tren - todo bien
