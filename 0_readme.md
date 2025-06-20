@@ -47,11 +47,11 @@ Luego de cargar los archivos nuevos, solo debe ejecutarse el programa. Se abrir√
 ## Estructuras de datos usadas
 - **Diccionarios**: Se utilizaron para almacenar datos en formato clave:valor, facilitando el acceso eficiente.  
 - **Listas**: Por su versatilidad y facilidad para manejar colecciones de datos.  
-- **Nodos**: Representan ciudades y conexiones.  
 - **Sets**: Se usaron en nodos y conexiones para obtener datos √∫nicos y evitar duplicados.  
 
 ## Conceptos usados aprendidos en la materia
 - Clases  
+- Nodos  
 - Herencia  
 - `Matplotlib`  
 - `Tkinter`
