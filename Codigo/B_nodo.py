@@ -4,8 +4,9 @@ from C_conexion import Conexion
 class Nodo():
     dict_nodos = {}
     nodos = set()
-    def __init__(self, nombre:str):
+    def __init__(self, nombre:str,poblacion:int):
         self.nombre=nombre
+        self.poblacion=int(poblacion)
         self.grafos= {"Automotor":set(),"Ferroviaria":set(),"Fluvial":set(),"Aerea":set()}
         Nodo.dict_nodos[self.nombre] = self
         Nodo.nodos.add(self)

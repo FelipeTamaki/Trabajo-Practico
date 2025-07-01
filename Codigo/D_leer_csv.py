@@ -17,7 +17,8 @@ def crear_nodos(archivo_nodos: str):
                 if fila == []:
                     continue
                 else:
-                    nodo = Nodo(fila[0])   
+                    nodo = Nodo(fila[0],fila[1])   
+
 
     else:
         return TypeError (f'Error de tipo: se esperaba un objeto de tipo string y se proporciono un objeto de tipo {type(archivo_nodos)} para la variable archivo_nodos')
