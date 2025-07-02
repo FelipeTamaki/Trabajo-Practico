@@ -363,7 +363,10 @@ class PlanificadorRutas:
         return rutas
         
     def estadistica_eficiencia(self):
-        carga = 30000
+        """Evalua la eficacia de cada transporte teniendo en cuenta una carga base
+
+        """
+        carga = 30000 # Carga base para determinar la eficiencia
         resultados = []
 
         for conexion in Conexion.conexiones:
@@ -372,11 +375,11 @@ class PlanificadorRutas:
             costo = self._costo_carga_total([conexion.origen, conexion.destino],carga,tipo,transporte) + transporte.calcular_costo_trayecto(conexion,carga)
             tiempo = transporte.calcular_tiempo(conexion)
             distancia = conexion.distancia_km
-            if costo<100000:
+            if costo<100000: # Si el costo es menor a 100000 le damos valor 1 porque lo consideramos eficiente en si
                 eficiencia_costo=1
             else:
                 eficiencia_costo=costo/100000
-            eficiencia = 0.55 / eficiencia_costo + 0.25 / tiempo + 0.2 / distancia
+            eficiencia = 0.55 / eficiencia_costo + 0.25 / tiempo + 0.2 / distancia # Nos permite asignarles distintas importancias en la determinacion de la eficiencia 
             resultados.append({"tipo": tipo,"costo": costo,"tiempo": tiempo,"distancia": distancia,"eficiencia": eficiencia})
 
         tipos = ["Aerea", "Ferroviaria", "Automotor", "Fluvial"]
