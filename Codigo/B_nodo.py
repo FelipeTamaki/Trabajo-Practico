@@ -1,32 +1,33 @@
 # Este archivo es para todo lo relacionado con la creacion de la clase nodo
+from C_conexion import Conexion
 
-class Nodo:
-    NODOS = set()  # Hace que no se repitan nodos
-    DICT_NODOS = {} # Se usa para buscarlos cuando se "crean" las conexiones
+class Nodo():
+    dict_nodos = {}
+    nodos = set()
+    def __init__(self, nombre:str,poblacion:int):
+        self.nombre=nombre
+        self.poblacion=int(poblacion)
+        self.grafos= {"Automotor":set(),"Ferroviaria":set(),"Fluvial":set(),"Aerea":set()}
+        Nodo.dict_nodos[self.nombre] = self
+        Nodo.nodos.add(self)
 
-    IMPRIMIR = set() # esta es solo de prueba para imprimir los nodos
-
-    def __init__(self, nombre: str): # Crea el nodo/ciudad y al principio no tiene conexiones
-        if not isinstance(nombre, str):
-            raise TypeError(f"Error de tipo: se esperaba un objeto de tipo str y se proporciono uno de tipo {type(nombre)} para la variable nombre")
-        if nombre in Nodo.NODOS:
-            raise ValueError(f"Ya existe un nodo con el nombre '{nombre}'")
-        self.nombre = nombre
-        self.conexiones = []  # Lista de las vias conectadas al nodo
-        self.tipos = set()  # Redes que pueden llegar al nodo
-        Nodo.NODOS.add(nombre)
-        Nodo.DICT_NODOS[nombre] = self
-        Nodo.IMPRIMIR.add(self)
-
-    def agregar_conexion(self, conexion): # Se crea una conexion con otro nodo mediante un objeto via
-        self.conexiones.append(conexion)
-        self.tipos.add(conexion.tipo)
-
-    def __str__(self):
-        return f"Nombre: {self.nombre} Redes: {(self.tipos)}"
-
+    def __repr__(self):
+        return f'{self.nombre}'
+    
+    def agregarConexion(self,conexion):
+        """
+        agrega la conexion al nodo para que la tome como propia
+        """
+        
+        if not isinstance(conexion, Conexion):
+            raise TypeError (f'Error de tipo: se esperaba una clase de tipo Conexion y se dio uno {type(conexion)}')
+        self.grafos[conexion.tipo].add(conexion)
+    
     @classmethod
-    def imprimir_nodos(cls): # Prueba
-        for nodo in cls.IMPRIMIR:
-            print(nodo)
-
+    def imprimirNodos(cls):
+        for nodo in cls.nodos:
+            print(f"{nodo.nombre}: ")
+            for tipo, conexiones in nodo.grafos.items():
+                print(f"{tipo}: ")
+                for conexion in conexiones:
+                    print(conexion)

@@ -1,38 +1,40 @@
 # Este archivo se encaga de todo lo relacionado a la creación de conexiones
+class Conexion():
+    conexiones = set()
+    def __init__(self,origen:str,destino:str,tipo:str,distancia_km:int,restriccion,valor_restriccion):
+        self.origen=origen
+        self.destino=destino
+        self.tipo=tipo
+        self.distancia_km=distancia_km
+        self.restriccion=restriccion
+        self.valor_restriccion=valor_restriccion
+        Conexion.conexiones.add(self)
+        self.conectar()
 
-from B_nodo import Nodo
-
-class Conexion:
-    CONEXIONES = set()
-    TIPOS = {"Aerea", "Ferroviaria", "Fluvial", "Automotor"}
-
-    def __init__(self, origen, destino, tipo:str, distancia_km: float, restriccion, valor_restriccion): # FALTA VERIFICACION DE TIPOS DE RESTRICCIONES
-        if not isinstance(origen, Nodo):
-            raise TypeError(f'Error de tipo: se esperaba un Nodo para origen y se recibió {type(origen)}')
-        if not isinstance(destino, Nodo):
-            raise TypeError(f'Error de tipo: se esperaba un Nodo para destino y se recibió {type(destino)}')
-        if not isinstance(distancia_km, float) or distancia_km <= 0:
-            raise ValueError(f'La distancia_km debe ser un número float positivo, no {distancia_km}')
-        if tipo not in Conexion.TIPOS:
-            raise ValueError(f'Tipo de transporte inválido. Debe ser uno de: {Conexion.TIPOS}')
-
-        self.origen = origen # Validado
-        self.destino = destino # Validado
-        self.distancia_km = distancia_km # Validado
-        self.tipo = tipo # Validado
-        self.restriccion = restriccion 
-        self.valor_restriccion = valor_restriccion # esto esta validado en leer_csv antes de crear cada conexion
-        origen.agregar_conexion(self)
-        destino.agregar_conexion(self)
-        Conexion.CONEXIONES.add(self)
-
-    def __str__(self):
+    def __repr__(self):
         if self.restriccion == "":
-            return f'Via {self.tipo} de {self.origen.nombre} a {self.destino.nombre}, {self.distancia_km} km. Restriccion: Ninguna'
-        else:
-            return f'Via {self.tipo} de {self.origen.nombre} a {self.destino.nombre}, {self.distancia_km} km. Restriccion: {self.restriccion} {self.valor_restriccion}'
+            return f" Origen:{self.origen}, Destino:{self.destino}, Tipo:{self.tipo}, Distancia_km:{self.distancia_km}, Restriccion: Ninguna"
+        else:           
+            return f" Origen:{self.origen}, Destino:{self.destino}, Tipo:{self.tipo}, Distancia_km:{self.distancia_km}, Restriccion:{self.restriccion}, Valor_restriccion:{self.valor_restriccion}"
+        
+    def conectar(self): 
+        """
+        Conecta ambos nodos (origen y destino) a la conexion
+        """
+        
+        self.origen.agregarConexion(self)
+        self.destino.agregarConexion(self)
     
+    def getOrigen(self):
+        return self.origen
+
+    def getDestino(self):
+        return self.destino
+
+    def getTipo(self):
+        return self.tipo
     @classmethod
-    def imprimir_conexiones(cls): #Prueba
-        for conexion in Conexion.CONEXIONES:
-            print(conexion)
+    def imprimirConexiones(cls):
+        for conex in Conexion.conexiones:
+            print(conex)
+            
